@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="test" xmlns:jacoco="antlib:org.jacoco.ant" >
+    <!--Jacoco的安装路径-->
+  <property name="jacocoantPath" value="/var/jenkins_home/workspace/jacoco/spring-boot-demo/spring-boot-demo-helloworld/jacocoant.jar"/>
+  <!--最终生成.exec文件的路径，Jacoco就是根据这个文件生成最终的报告的-->
+  <property name="jacocoexecPath" value="/var/jenkins_home/workspace/jacoco/spring-boot-demo/spring-boot-demo-helloworld/jacoco.exec"/>
+    <!--生成覆盖率报告的路径-->
+  <property name="reportfolderPath" value="/var/jenkins_home/workspace/jacoco/spring-boot-demo/spring-boot-demo-helloworld/report"/>
+  <!--远程tomcat服务的ip地址-->
+  <property name="server_ip" value="132.232.56.253/"/>
+  <!--前面配置的远程tomcat服务打开的端口，要跟上面配置的一样-->
+  <property name="server_port" value="8900"/>
+  <!--源代码路径可以包含多个源代码-->
+  <property name="checkOrderSrcpath" value="/var/jenkins_home/workspace/jacoco/spring-boot-demo/spring-boot-demo-helloworld/src/main/java/" />
+
+  <!--.class文件路径可以包含多个-->
+  <property name="checkOrderClasspath" value="/var/jenkins_home/workspace/jacoco/spring-boot-demo/spring-boot-demo-helloworld/target/classes"/>
+
+
+  <!--让ant知道去哪儿找Jacoco-->
+  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+      <classpath path="${jacocoantPath}" />
+  </taskdef>
+
+  <!--dump任务:
+      根据前面配置的ip地址，和端口号，
+      访问目标tomcat服务，并生成.exec文件。-->
+
+  <target name="dump">
+      <jacoco:dump address="${server_ip}" reset="true" destfile="${jacocoexecPath}" port="${server_port}" append="false"/>
+  </target>
+
+   <!--jacoco任务:
+      根据前面配置的源代码路径和.class文件路径，
+      根据dump后，生成的.exec文件，生成最终的html覆盖率报告。-->
+  <target name="report">
+      <delete dir="${reportfolderPath}" />
+      <mkdir dir="${reportfolderPath}" />
+
+      <jacoco:report>
+          <executiondata>
+              <file file="${jacocoexecPath}" />
+          </executiondata>
+
+          <structure name="JaCoCo Report">
+              <group name="Check Order related">
+                  <classfiles>
+                      <fileset dir="${checkOrderClasspath}" />
+                  </classfiles>
+                  <sourcefiles encoding="utf-8">
+                      <fileset dir="${checkOrderSrcpath}" />
+                  </sourcefiles>
+              </group>
+          </structure>
+          <html destdir="${reportfolderPath}" encoding="utf-8" />
+      </jacoco:report>
+  </target>
+</project>
