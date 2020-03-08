@@ -7,7 +7,7 @@
     <!--生成覆盖率报告的路径-->
   <property name="reportfolderPath" value="/var/jenkins_home/workspace/jacoco/spring-boot-demo/spring-boot-demo-helloworld/report"/>
   <!--远程tomcat服务的ip地址-->
-  <property name="server_ip" value="132.232.56.253/"/>
+  <property name="server_ip" value="132.232.56.253"/>
   <!--前面配置的远程tomcat服务打开的端口，要跟上面配置的一样-->
   <property name="server_port" value="8900"/>
   <!--源代码路径可以包含多个源代码-->
